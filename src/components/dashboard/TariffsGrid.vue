@@ -19,7 +19,8 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useAuthStore, Plan } from "../../stores/auth";
+import { useAuthStore } from "../../stores/auth";
+import type { Plan } from "../../stores/auth";
 import TariffCard from "./TariffCard.vue";
 
 type TabKey = "trial" | "monthly" | "yearly" | "universal" | "builder";

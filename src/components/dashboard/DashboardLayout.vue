@@ -2,7 +2,7 @@
   <div class="dash">
     <DashboardSidebar
       :active="active"
-      :user="user"
+      :user="{ username: auth.currentUser?.username ?? 'Username', role: auth.roleLabel }"
       @select="active = $event"
     />
 
@@ -35,21 +35,19 @@
 
 <script setup lang="ts">
 import { ref } from "vue";
+import { useAuthStore } from "../../stores/auth"; // ⚠️ путь проверь: откуда лежит DashboardLayout.vue
+
 import DashboardSidebar from "./DashboardSidebar.vue";
 import SubscriptionSection from "./SubscriptionSection.vue";
-import ManageSubscriptionSection from "../dashboard/views/ManageSubscriptionView.vue"; // <-- твой готовый компонент
+import ManageSubscriptionSection from "../dashboard/views/ManageSubscriptionView.vue";
 import ReferralSection from "./ReferralSection.vue";
 import SecuritySection from "./SecuritySection.vue";
 
-
 type TabKey = "subscription" | "manage" | "ref" | "security" | "help";
 
-const active = ref<TabKey>("subscription");
+const auth = useAuthStore(); // ✅ вот этого не хватало
 
-const user = ref({
-  name: "Username",
-  role: "Admin",
-});
+const active = ref<TabKey>("subscription");
 </script>
 
 <style scoped>

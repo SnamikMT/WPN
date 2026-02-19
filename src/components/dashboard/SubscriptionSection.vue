@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import TariffsGrid from "./TariffsGrid.vue";
 
 type TabKey = "trial" | "monthly" | "yearly" | "universal" | "builder";
@@ -42,9 +42,7 @@ const tabs = [
 ];
 
 const active = ref<TabKey>("monthly");
-const activeLabel = computed(() => tabs.find(t => t.key === active.value)?.label ?? "");
 </script>
-
 
 <style scoped>
 /* ===== Head ===== */
@@ -81,7 +79,7 @@ const activeLabel = computed(() => tabs.find(t => t.key === active.value)?.label
   border-radius: 20px;
 
   width: 100%;
-  max-width: 635px; /* как в фигме; при меньшем экране ужмётся */
+  max-width: 635px;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -93,7 +91,7 @@ const activeLabel = computed(() => tabs.find(t => t.key === active.value)?.label
   align-items: center;
   gap: 6px;
 
-  height: 40px; /* 48 панель - 8 паддинги */
+  height: 40px;
   padding: 0 12px;
 
   border-radius: 16px;
@@ -129,9 +127,7 @@ const activeLabel = computed(() => tabs.find(t => t.key === active.value)?.label
 }
 
 /* ===== Content ===== */
-.sub__content {
-  margin-top: 18px;
-}
+.sub__content { margin-top: 18px; }
 
 .stub {
   padding: 22px;
