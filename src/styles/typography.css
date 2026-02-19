@@ -1,0 +1,27 @@
+:root {
+  --font-main: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* Заголовок */
+.h1 {
+  font-family: var(--font-main);
+  font-weight: 500;
+  font-size: 60px;
+  line-height: 1;
+}
+
+/* Подзаголовок */
+.subtitle {
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 28px;
+  line-height: 1;
+}
+
+/* Текст кнопки */
+.btn-text {
+  font-family: var(--font-main);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1;
+}
