@@ -8,13 +8,15 @@
 </template>
 
 <script setup lang="ts">
+import defaultIcon from "../../assets/img/arrow-down.png";
+
 const props = defineProps<{
   href?: string;
   iconSrc?: string;
 }>();
 
 const href = props.href ?? "#next";
-const iconSrc = props.iconSrc ?? "/src/assets/img/arrow-down.png";
+const iconSrc = props.iconSrc ?? defaultIcon;
 </script>
 
 <style scoped>
