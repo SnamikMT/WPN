@@ -72,4 +72,8 @@ const iconSrc = props.iconSrc ?? "/src/assets/img/arrow-down.png";
   opacity: .9;
 }
 
+@media (max-width: 520px) {
+  .bar {padding-bottom: 0px;}
+}
+
 </style>

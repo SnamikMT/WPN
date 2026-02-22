@@ -116,7 +116,7 @@ defineEmits<{ (e: "enterPanel"): void }>();
   font-weight: 400;
   font-size: 28px;
   line-height: 100%;
-  opacity: 0.78;
+  opacity: 0.6;
 }
 
 .hero__cta {
@@ -138,13 +138,15 @@ defineEmits<{ (e: "enterPanel"): void }>();
 @media (max-width: 900px) {
   .hero__title { font-size: 44px; }
   .hero__desc { font-size: 20px; }
-  .heroPill__text { font-size: 14px; }
+  .heroPill__text { font-size: 16px; }
 }
 
 @media (max-width: 520px) {
   .hero { padding: 48px 0 80px; }
-  .hero__title { font-size: 34px; }
+  .hero__title { font-size: 30px; }
   .hero__desc { font-size: 16px; }
-  .heroPill { padding: 8px 8px; }
+  .heroPill { padding: 4px 8px; }
+  .hero__wrap { text-align: center; min-height: 450px;}
+  .hero__cta {justify-content: center;}
 }
 </style>

@@ -52,7 +52,7 @@
         <span class="price__val">{{ price }}</span>
       </div>
 
-      <button class="buyBtn" type="button">
+      <button class="buyBtn" type="button"  @click="emit('select')">
         <span>Приобрести</span>
         <img class="buyBtn__arrow" :src="btnArrow" alt="" aria-hidden="true" />
       </button>
@@ -97,6 +97,10 @@ function onDocClick(e: MouseEvent) {
 }
 document.addEventListener("click", onDocClick);
 onBeforeUnmount(() => document.removeEventListener("click", onDocClick));
+
+const emit = defineEmits<{
+  (e: "select"): void;
+}>();
 </script>
 
 <style scoped>

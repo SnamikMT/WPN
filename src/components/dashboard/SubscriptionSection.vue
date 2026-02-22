@@ -22,14 +22,24 @@
     </div>
 
     <div class="sub__content">
-      <TariffsGrid :activeTab="active" />
+      <TariffsGrid :activeTab="active" @pick="onPickTariff" />
+
+      <SubscribeModal
+        v-model="isSubOpen"
+        :title="subTitle"
+        :price="subPrice"
+        :locations="subLocations"
+        :initialLocation="subInitialLocation"
+        @submit="onBuy"
+      />
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import TariffsGrid from "./TariffsGrid.vue";
+import TariffsGrid, { type TariffPickPayload } from "./TariffsGrid.vue";
+import SubscribeModal from "../ui/SubscribeModal.vue";
 
 type TabKey = "trial" | "monthly" | "yearly" | "universal" | "builder";
 
@@ -42,6 +52,27 @@ const tabs = [
 ];
 
 const active = ref<TabKey>("monthly");
+
+/* modal state */
+const isSubOpen = ref(false);
+const subTitle = ref("Подписка");
+const subPrice = ref(0);
+const subLocations = ref<string[]>([]);
+const subInitialLocation = ref("");
+
+function onPickTariff(t: TariffPickPayload) {
+  subTitle.value = t.title;
+  subPrice.value = t.priceRub;
+
+  subLocations.value = t.locations ?? [];
+  subInitialLocation.value = t.defaultLocation ?? (subLocations.value[0] ?? "");
+
+  isSubOpen.value = true;
+}
+
+function onBuy(p: any) {
+  console.log("BUY", p);
+}
 </script>
 
 <style scoped>
@@ -64,7 +95,7 @@ const active = ref<TabKey>("monthly");
   color: #FFFFFF99;
 }
 
-/* ===== Tabs Panel ===== */
+/* ===== Tabs Panel (desktop/tablet default) ===== */
 .subTabs {
   margin-top: 18px;
 
@@ -80,6 +111,7 @@ const active = ref<TabKey>("monthly");
 
   width: 100%;
   max-width: 635px;
+
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -129,11 +161,38 @@ const active = ref<TabKey>("monthly");
 /* ===== Content ===== */
 .sub__content { margin-top: 18px; }
 
-.stub {
-  padding: 22px;
-  border-radius: 24px;
-  border: 1px dashed rgba(255,255,255,.12);
-  color: rgba(255,255,255,.45);
-  font-family: var(--font-sf);
+/* ===== MOBILE: как в макете (перенос + центр) ===== */
+@media (max-width: 520px) {
+  .subTabs {
+    max-width: 100%;
+    padding: 10px 10px;          /* как “плашка” */
+    border-radius: 26px;
+
+    gap: 10px;                   /* чтобы не липли */
+    justify-content: center;     /* все пункты по центру */
+    flex-wrap: wrap;             /* ✅ перенос строк */
+    overflow: visible;           /* ✅ убираем горизонтальный скролл */
+  }
+
+  .subTab {
+    height: 44px;
+    padding: 0 18px;
+    border-radius: 999px;        /* “пилюля” */
+    font-size: 18px;             /* крупнее как на скрине */
+    color: rgba(255,255,255,.55);
+  }
+
+  .subTab.is-active {
+    background: #5D5DD0;
+    color: rgba(255,255,255,.95);
+  }
+
+  .subTab__badge {
+    padding: 6px 10px;
+    font-size: 14px;
+    background: rgba(0,0,0,.35); /* чтобы как в макете “Новое” */
+    border-color: rgba(255,255,255,.10);
+    color: rgba(255,255,255,.9);
+  }
 }
 </style>

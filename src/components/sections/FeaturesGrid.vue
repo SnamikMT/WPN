@@ -206,5 +206,10 @@ const cards: Card[] = [
 @media (max-width: 520px) {
   .feat__grid { grid-template-columns: 1fr; }
   .feat__title { font-size: 30px; }
-}
+  .card {background-color: none;}
+
+  .feat__subtitle {
+    font-size: 14px;
+  }
+  }
 </style>

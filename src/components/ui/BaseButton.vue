@@ -1,15 +1,17 @@
 <template>
-  <button class="base-button" :class="[`v-${variant}`, `s-${size}`]" :type="type">
+  <component
+    :is="as"
+    class="base-button"
+    :class="[`v-${variant}`, `s-${size}`]"
+    :type="as === 'button' ? type : undefined"
+    :href="as === 'a' ? href : undefined"
+    :target="as === 'a' ? target : undefined"
+    :rel="as === 'a' ? rel : undefined"
+  >
     <span class="btn-text"><slot /></span>
 
-    <img
-      v-if="arrow"
-      class="btn-arrow"
-      :src="arrowIcon"
-      alt=""
-      aria-hidden="true"
-    />
-  </button>
+    <img v-if="arrow" class="btn-arrow" :src="arrowIcon" alt="" aria-hidden="true" />
+  </component>
 </template>
 
 <script setup lang="ts">
@@ -21,12 +23,23 @@ withDefaults(
     type?: "button" | "submit" | "reset";
     variant?: "solid" | "ghost";
     size?: "md" | "sm";
+
+    /* ✅ new */
+    as?: "button" | "a";
+    href?: string;
+    target?: string;
+    rel?: string;
   }>(),
   {
     arrow: false,
     type: "button",
     variant: "solid",
     size: "md",
+
+    as: "button",
+    href: "",
+    target: "_blank",
+    rel: "noopener noreferrer",
   }
 );
 </script>
@@ -40,13 +53,13 @@ withDefaults(
 
   border: none;
   cursor: pointer;
+  text-decoration: none; /* ✅ чтобы <a> выглядел как кнопка */
 
   font-family: var(--font-sf);
   font-weight: 400;
   line-height: 100%;
   user-select: none;
 
-  /* Анимация: “дорогой” hover */
   transition:
     transform 0.18s ease,
     box-shadow 0.18s ease,
@@ -68,7 +81,6 @@ withDefaults(
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
 }
 
-/* focus для клавиатуры */
 .base-button:focus-visible {
   outline: 2px solid rgba(76, 103, 255, 0.55);
   outline-offset: 2px;
@@ -87,7 +99,6 @@ withDefaults(
 }
 
 /* ====== SIZE ====== */
-/* как в модалках */
 .s-md {
   height: 36px;
   padding: 10px 12px;
@@ -95,11 +106,10 @@ withDefaults(
   font-size: 14px;
 }
 
-/* как в хедере */
 .s-sm {
   height: 32px;
   padding: 0 14px;
-  border-radius: 14px; /* тот же радиус */
+  border-radius: 14px;
   font-size: 14px;
 }
 

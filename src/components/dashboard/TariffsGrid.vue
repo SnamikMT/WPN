@@ -13,6 +13,7 @@
       :chips="c.chips"
       :note="c.note"
       :price="c.price"
+      @select="onSelect(c)"
     />
   </div>
 </template>
@@ -26,9 +27,20 @@ import TariffCard from "./TariffCard.vue";
 type TabKey = "trial" | "monthly" | "yearly" | "universal" | "builder";
 type BadgeVariant = "popular" | "best" | "muted";
 
+export type TariffPickPayload = {
+  id: string;
+  planKey: Exclude<Plan, "none">;
+  title: string;
+  subTitle: string;
+  priceRub: number;          // число, удобно для модалки
+  priceText: string;         // "100 ₽"
+  locations?: string[];      // selectOptions
+  defaultLocation?: string;  // selectValue
+};
+
 type Card = {
   id: string;
-  planKey: Exclude<Plan, "none">; // trial | monthly | yearly
+  planKey: Exclude<Plan, "none">;
   title: string;
   subTitle: string;
   badges?: { text: string; variant: BadgeVariant }[];
@@ -37,21 +49,22 @@ type Card = {
   chips?: string[];
   note?: string;
   price: string;
+  isActive?: boolean; // добавляем в visibleCards
 };
 
 const props = defineProps<{ activeTab: TabKey }>();
+
+const emit = defineEmits<{
+  (e: "pick", payload: TariffPickPayload): void;
+}>();
 
 const auth = useAuthStore();
 
 const userPlan = computed<Plan>(() => auth.currentUser?.plan ?? "none");
 const hasPlan = computed(() => userPlan.value !== "none");
 
-/**
- * ВАЖНО: эти карточки — мок.
- * Привязываем их к planKey, чтобы дальше логика была железобетонная.
- */
+/* мок карточек */
 const cards = computed<Card[]>(() => [
-  // ===== monthly =====
   {
     id: "m1",
     planKey: "monthly",
@@ -86,8 +99,6 @@ const cards = computed<Card[]>(() => [
     note: "43 Уникальных сервера",
     price: "100 ₽",
   },
-
-  // ===== yearly ===== (можешь допилить контент позже)
   {
     id: "y1",
     planKey: "yearly",
@@ -98,8 +109,6 @@ const cards = computed<Card[]>(() => [
     note: "Максимальная выгода",
     price: "560 ₽",
   },
-
-  // ===== trial =====
   {
     id: "t1",
     planKey: "trial",
@@ -111,26 +120,42 @@ const cards = computed<Card[]>(() => [
   },
 ]);
 
-/**
- * Какие карточки показываем по активной вкладке
- * (universal/builder можно пока показать пусто/заглушку).
- */
 const visibleCards = computed(() => {
   const tab = props.activeTab;
 
-  // фильтрация по вкладкам
   let list: Card[] = [];
-  if (tab === "monthly") list = cards.value.filter(c => c.planKey === "monthly");
-  else if (tab === "yearly") list = cards.value.filter(c => c.planKey === "yearly");
-  else if (tab === "trial") list = cards.value.filter(c => c.planKey === "trial");
-  else list = cards.value.filter(c => c.planKey === "monthly"); // временно
+  if (tab === "monthly") list = cards.value.filter((c) => c.planKey === "monthly");
+  else if (tab === "yearly") list = cards.value.filter((c) => c.planKey === "yearly");
+  else if (tab === "trial") list = cards.value.filter((c) => c.planKey === "trial");
+  else list = cards.value.filter((c) => c.planKey === "monthly");
 
-  // выделение “Активна” — только если у юзера есть подписка
   return list.map((c) => ({
     ...c,
     isActive: hasPlan.value && c.planKey === userPlan.value,
   }));
 });
+
+/* утилита: "100 ₽" -> 100 */
+function parseRub(text: string): number {
+  const n = Number(String(text).replace(/[^\d]/g, ""));
+  return Number.isFinite(n) ? n : 0;
+}
+
+function onSelect(c: Card) {
+  // если активный — можно запретить или открыть “управление”
+  if (c.isActive) return;
+
+  emit("pick", {
+    id: c.id,
+    planKey: c.planKey,
+    title: c.title,
+    subTitle: c.subTitle,
+    priceRub: parseRub(c.price),
+    priceText: c.price,
+    locations: c.selectOptions,
+    defaultLocation: c.selectValue,
+  });
+}
 </script>
 
 <style scoped>

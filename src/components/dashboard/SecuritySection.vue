@@ -157,7 +157,7 @@
             <input class="inp" placeholder="Введите код с почты для удаления" v-model="delCode" />
 
             <div class="ctaRow">
-              <button class="bigBtn bigBtn--danger" type="button">
+              <button class="bigBtn bigBtn--danger" type="button" @click="openConfirmDelete">
                 <span>Удалить аккаунт</span>
                 <img class="bigBtn__arrow" :src="arrowIcon" alt="" aria-hidden="true" />
               </button>
@@ -167,6 +167,10 @@
       </div>
     </div>
   </section>
+  <ConfirmDeleteModal
+  v-model="isConfirmDeleteOpen"
+  @confirm="confirmDelete"
+/>
 </template>
 
 <script setup lang="ts">
@@ -181,8 +185,25 @@ import icoDots from "../../assets/img/ico-dots.png"; // "..." как на мак
 import icoGrid from "../../assets/img/ico-grid.png"; // квадратики как на макете
 import icoWarn from "../../assets/img/ico-warn.png"; // треугольник
 
-/* QR мок (поставь свой файл, либо позже заменим на генерёжку) */
 import qrMock from "../../assets/img/qr-mock.png";
+
+import ConfirmDeleteModal from "../ui/ConfirmDeleteModal.vue";
+
+const isConfirmDeleteOpen = ref(false);
+
+function openConfirmDelete() {
+  // можно добавить валидацию, если хочешь:
+  // if (!delEmail.value || !delCode.value) return;
+  isConfirmDeleteOpen.value = true;
+}
+
+function confirmDelete() {
+  // тут позже подключишь API удаления
+  console.log("[DELETE ACCOUNT CONFIRMED]", {
+    email: delEmail.value,
+    code: delCode.value,
+  });
+}
 
 /* state */
 const showOld = ref(false);
@@ -335,7 +356,7 @@ const delCode = ref("");
 
 /* side button (small square with arrow) */
 .sideBtn {
-  width: 44px;
+  width: 34px;
   height: 44px;
   border-radius: 14px;
   border: none;
@@ -432,7 +453,6 @@ const delCode = ref("");
   background: rgba(255,255,255,.04);
   display: grid;
   place-items: center;
-  padding: 18px;
 }
 
 .qr__img {
@@ -441,7 +461,6 @@ const delCode = ref("");
   height: auto;
   border-radius: 14px;
   display: block;
-  background: #fff;
 }
 
 /* ===== responsive ===== */

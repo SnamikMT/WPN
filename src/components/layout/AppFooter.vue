@@ -7,8 +7,9 @@
         <!-- LEFT -->
         <div class="brand">
           <div class="brand__title">
+            <!-- ✅ иконка как эмодзи -->
             <img class="brand__icon" :src="logo" alt="WPN" />
-            <span>
+            <span class="brand__titleText">
               WPN — ваше право на свободный<br />
               доступ ко всем ресурсам
             </span>
@@ -76,18 +77,15 @@ import arrow from "../../assets/img/link-arrow.png";
 </script>
 
 <style scoped>
-/* без отступов (как ты просил) */
 .ftr {
   background: #0b0d12;
 }
 
-/* линия над футером */
 .ftr__line {
   height: 1px;
   background: #191920;
 }
 
-/* сетка */
 .ftr__grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
@@ -100,29 +98,36 @@ import arrow from "../../assets/img/link-arrow.png";
   padding: 24px 0;
 }
 
+/* ✅ вместо grid — inline flow как “эмодзи в тексте” */
 .brand__title {
-  display: grid;
-  grid-template-columns: 28px 1fr; /* иконка + текст */
-  column-gap: 12px;
-  align-items: start;
-
   font-family: var(--font-sf);
   font-weight: 500;
   font-size: 28px;
   line-height: 120%;
   color: #fff;
+
+  /* важно: чтобы это было именно “текстом”, а не grid */
+  display: block;
 }
 
-/* иконка логотипа в строке */
+/* иконка в строке */
 .brand__icon {
   width: 28px;
   height: 28px;
-  display: block;
-  margin-top: 4px;
+
+  display: inline-block;     /* ✅ inline поведение */
+  vertical-align: text-top;  /* ✅ как эмодзи рядом с текстом */
+  margin-right: 12px;        /* расстояние как раньше */
+  margin-top: 0;             /* больше не нужно */
+}
+
+/* обертка текста */
+.brand__titleText {
+  display: inline;           /* ✅ чтобы перенос работал как у текста */
 }
 
 .brand__desc {
-  margin-top: 24px; /* как в макете */
+  margin-top: 24px;
   max-width: 427px;
 
   font-family: var(--font-sf);
@@ -133,10 +138,9 @@ import arrow from "../../assets/img/link-arrow.png";
   color: #ffffff99;
 }
 
-
 /* RIGHT */
 .cols {
-  padding: 24px 0; /* чтобы верх правой части совпадал с логотипом */
+  padding: 24px 0;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 60px;
@@ -148,27 +152,23 @@ import arrow from "../../assets/img/link-arrow.png";
   font-weight: 500;
   font-size: 16px;
   line-height: 100%;
-  color: rgba(255,255,255,.9);
+  color: rgba(255, 255, 255, 0.9);
 
-  /* расстояние пункта от заголовка меню 18px */
   margin-bottom: 18px;
   text-align: right;
 }
 
-/* пункт меню */
 .col__link {
   display: flex;
   align-items: center;
-  justify-content: end; /* было flex-end */
+  justify-content: end;
   gap: 10px;
 
   font-family: var(--font-sf);
   font-weight: 400;
   font-size: 16px;
   line-height: 100%;
-  letter-spacing: 0;
   text-align: right;
-  vertical-align: middle;
 
   color: #ffffff99;
   text-decoration: none;
@@ -181,25 +181,41 @@ import arrow from "../../assets/img/link-arrow.png";
 }
 
 .col__link:hover {
-  color: rgba(255,255,255,.88);
+  color: rgba(255, 255, 255, 0.88);
 }
 
 .col__arrow {
-  width: 14px;  /* подгонишь под реальный png */
+  width: 14px;
   height: 14px;
   display: block;
-  opacity: .9;
+  opacity: 0.9;
 }
 
 /* адаптив */
 @media (max-width: 980px) {
-  .ftr__grid { grid-template-columns: 1fr; }
-  .cols { grid-template-columns: 1fr 1fr; gap: 28px; }
-  .col__link { justify-content: flex-start; text-align: left; }
+  .ftr__grid {
+    grid-template-columns: 1fr;
+  }
+  .cols {
+    grid-template-columns: 1fr 1fr;
+    gap: 75px;
+  }
+  .col__link {
+    justify-content: flex-start;
+    text-align: left;
+  }
+  .col__title {
+    text-align: left;
+  }
 }
 
 @media (max-width: 520px) {
-  .brand__logo { width: 260px; height: auto; }
-  .cols { grid-template-columns: 1fr; }
+  .cols {
+    grid-template-columns: 1fr;
+  }
+
+  .brand__title {font-size: 20px;}
+  .brand__icon {height: 20px; width: 20px;}
+  .brand__desc {max-width: 350px;}
 }
 </style>

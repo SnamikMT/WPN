@@ -1,5 +1,7 @@
+import statsLocation from "../assets/img/stats-location.png";
+
 export const stats = [
-  { value: "42", label: "Локации", icon: "/src/assets/img/stats-location.png" },
+  { value: "42", label: "Локации", icon: statsLocation },
   { value: "99.9%", label: "Up-time" },
   { value: "∞", label: "Лимит трафика" },
   { value: "VLESS", label: "Протокол" },

@@ -73,7 +73,6 @@
                 :title="b.label + ': ' + b.value"
               ></div>
 
-              <!-- буквы месяцев прямо ВНУТРИ графика -->
               <div class="monthsIn">
                 <div v-for="m in months" :key="m" class="m">{{ m }}</div>
               </div>
@@ -92,9 +91,9 @@
 
           <p class="infoCard__text">
             Каждый пользователь, который зарегистрируется по вашей уникальной ссылке,
-            <a class="infoCard__link" href="#" @click.prevent>получит 5 дополнительных дней</a>
-            при покупке подписки. А вы получите <b>10%</b> от суммы его покупки и <b>5 дней</b>
-            к подписке.
+            <span class="blue">получит 5 дополнительных дней при покупке подписки</span>.
+            А вы получите <span class="blue">10%</span> от суммы его покупки и
+            <span class="blue">5 дней к подписке</span>.
           </p>
 
           <p class="infoCard__text">
@@ -103,7 +102,7 @@
             и
             <span class="hl hl--tt">Тиктокеров</span>
             для сотрудничества, на более выгодных условиях реферальной системы. Свяжитесь с нами через
-            <a class="infoCard__tg" href="#" @click.prevent>telegram</a>
+            <a class="infoCard__tg blueLink" href="#" @click.prevent>telegram</a>
             для обсуждения индивидуальных условий.
           </p>
         </article>
@@ -126,7 +125,7 @@
           </article>
         </div>
 
-        <!-- TABLE CARD (как на скрине) -->
+        <!-- TABLE CARD -->
         <article class="tableCard">
           <div class="tableBox">
             <!-- head -->
@@ -170,7 +169,7 @@ import BaseButton from "../ui/BaseButton.vue";
 
 import icoArrow from "../../assets/img/arrow-right2.png";
 import icoDownload from "../../assets/img/ico-download.png";
-import icoStats from "../../assets/img/ico-download.png";    
+import icoStats from "../../assets/img/ico-download.png";
 import icoChevron from "../../assets/img/select-arrow.png";
 
 const refLink = "wpn.com/ref3910-01?";
@@ -288,7 +287,7 @@ const bars = [
   gap: 18px;
 }
 
-/* ===== cards base ===== */
+/* ===== base cards ===== */
 .promoCard,
 .chartCard,
 .infoCard,
@@ -300,6 +299,18 @@ const bars = [
   box-shadow: 0 18px 60px rgba(0,0,0,.35);
   padding: 18px;
 }
+
+/* ===== BLUE ACCENTS ===== */
+.blue {
+  color: #4C67FF; /* тот же синий */
+  font-weight: 400;
+}
+
+.blueLink {
+  color: #4C67FF;
+  text-decoration: none;
+}
+.blueLink:hover { text-decoration: underline; }
 
 /* ===== PROMO CARD ===== */
 .promoCard {
@@ -380,14 +391,13 @@ const bars = [
   color: rgba(255,255,255,.92);
 }
 
-/* dropdown: как выделения, БЕЗ бордера */
 .dropdown { position: relative; }
 .dropdown__btn {
   height: 34px;
   padding: 0 12px;
   border-radius: 999px;
-  border: none;              /* ✅ без бордера */
-  background: #FFFFFF33;     /* ✅ как у фоновых выделений */
+  border: none;
+  background: #FFFFFF33;
   color: rgba(255,255,255,.85);
   cursor: pointer;
   display: inline-flex;
@@ -422,7 +432,6 @@ const bars = [
 }
 .dropdown__opt:hover { background: rgba(255,255,255,.06); }
 
-/* ✅ внутренний фон графика как у таблицы */
 .chartBox{
   margin-top: 14px;
   padding: 12px;
@@ -430,7 +439,6 @@ const bars = [
   background: #19192099;
 }
 
-/* bars area (внутри chartBox) */
 .bars{
   position: relative;
   height: 140px;
@@ -438,8 +446,6 @@ const bars = [
   grid-template-columns: repeat(12, 1fr);
   gap: 8px;
   align-items: end;
-
-  /* чтобы буквы поместились внутри снизу */
   padding-bottom: 22px;
 }
 
@@ -449,17 +455,14 @@ const bars = [
   box-shadow: inset 0 -10px 25px rgba(255,255,255,.08);
 }
 
-/* ✅ буквы месяцев внутри графика */
 .monthsIn{
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   gap: 8px;
-
   pointer-events: none;
 }
 
@@ -484,21 +487,12 @@ const bars = [
   color: rgba(255,255,255,.88);
 }
 
-.infoCard__link{
-  color: #4C67FF;
-  text-decoration: none;
-}
-.infoCard__link:hover{ text-decoration: underline; }
-
 .hl{ font-weight: 600; }
 .hl--yt{ color: #E24343; }
 .hl--tt{ color: #5B94DF; }
 
-.infoCard__tg{
-  color: rgba(255,255,255,.88);
-  text-decoration: underline; /* ✅ telegram подчеркнуть */
-}
-.infoCard__tg:hover{ opacity: .9; }
+/* telegram тоже синий */
+.infoCard__tg { font-weight: 400; }
 
 /* ===== STATS ===== */
 .statsRow {
@@ -525,10 +519,10 @@ const bars = [
   color: #ffffff99;
 }
 
-/* ===== TABLE (макет как на скрине) ===== */
+/* ===== TABLE ===== */
 .tableCard{
   padding: 0;
-  background: transparent;          /* наружная карточка не нужна */
+  background: transparent;
   box-shadow: none;
   backdrop-filter: none;
 }
@@ -537,42 +531,46 @@ const bars = [
   border-radius: 24px;
   padding: 14px 14px 12px;
 
-  /* тот самый “мягкий” фон таблицы */
-  background:
-    radial-gradient(120% 120% at 20% 0%, rgba(255,255,255,.06) 0%, rgba(255,255,255,0) 55%),
-    linear-gradient(180deg, rgba(25,25,32,.72) 0%, rgba(25,25,32,.52) 100%);
+  /* ✅ фон таблицы как просил */
+  background: #19192066;
+
+  border: 1px solid rgba(255,255,255,.06);
   box-shadow: 0 18px 60px rgba(0,0,0,.35);
   backdrop-filter: blur(24px);
 }
 
-/* сетка колонок */
 .tHead, .tRow{
   display: grid;
   grid-template-columns: 70px 1fr 170px 170px;
   align-items: center;
 }
 
-/* заголовки */
 .tHead{
   padding: 10px 10px 12px;
   color: rgba(255,255,255,.55);
-  font-family: var(--font-sf);
   font-size: 12px;
   line-height: 100%;
 }
 
-/* тело без разделителей */
+/* ✅ строки через одну + читаемость */
 .tBody{
   display: grid;
-  gap: 10px;              /* расстояние между строками, как на скрине */
+  gap: 8px;
   padding: 2px 0 0;
 }
 
 .tRow{
-  padding: 8px 10px;
+  padding: 10px 10px;
   border-radius: 14px;
-  /* у строк нет бордеров — только мягкое затемнение */
-  background: rgba(0,0,0,.12);
+  border: 1px solid rgba(255,255,255,.03); /* чтобы “контур” строки был виден */
+}
+
+/* чередование как у блока */
+.tRow:nth-child(odd){
+  background: rgba(12,12,15,.30);
+}
+.tRow:nth-child(even){
+  background: rgba(25,25,32,.26);
 }
 
 .th, .td{
@@ -582,21 +580,17 @@ const bars = [
   text-overflow: ellipsis;
 }
 
-/* значения */
 .td{
-  font-family: var(--font-sf);
   font-size: 13px;
   line-height: 100%;
-  color: rgba(255,255,255,.85);
+  color: rgba(255,255,255,.9);
 }
 
-/* выравнивание как в макете */
 .th--id, .td--id{ text-align: left; padding-left: 6px; }
-.th--name, .td--name{ text-align: center; }        /* Username по центру */
+.th--name, .td--name{ text-align: center; }
 .th--orders, .td--orders{ text-align: center; }
 .th--date, .td--date{ text-align: right; padding-right: 6px; }
 
-/* футер таблицы */
 .tFoot{
   margin-top: 12px;
   display: flex;
@@ -607,13 +601,11 @@ const bars = [
 }
 
 .tTotal{
-  font-family: var(--font-sf);
   font-size: 12px;
   line-height: 100%;
   color: rgba(255,255,255,.55);
 }
 
-/* кнопка как на скрине: “пилюля” */
 .showAll{
   height: 34px;
   padding: 0 14px;
@@ -625,8 +617,6 @@ const bars = [
   display: inline-flex;
   align-items: center;
   gap: 8px;
-
-  font-family: var(--font-sf);
   font-size: 13px;
   line-height: 100%;
 }
@@ -643,28 +633,22 @@ const bars = [
   opacity: .9;
 }
 
-/* адаптив */
+/* responsive */
+@media (max-width: 1120px) {
+  .ref__grid { grid-template-columns: 1fr; }
+  .statsRow { grid-template-columns: 1fr; }
+}
+
 @media (max-width: 860px){
   .tHead, .tRow{
     grid-template-columns: 60px 1fr 130px 140px;
   }
 }
+
 @media (max-width: 560px){
   .tHead, .tRow{
     grid-template-columns: 52px 1fr 110px 120px;
   }
   .tFoot{ flex-direction: column; align-items: flex-start; }
-}
-
-
-/* ===== responsive ===== */
-@media (max-width: 1120px) {
-  .ref__grid { grid-template-columns: 1fr; }
-  .statsRow { grid-template-columns: 1fr; }
-  .tableCard__head, .tr { grid-template-columns: 70px 1fr 140px 160px; }
-}
-
-@media (max-width: 560px) {
-  .tableCard__head, .tr { grid-template-columns: 60px 1fr 110px 140px; }
 }
 </style>
