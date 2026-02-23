@@ -10,9 +10,9 @@
 
           <!-- DESKTOP NAV -->
           <nav class="hdr__nav" aria-label="Основное меню">
-            <a class="hdr__link is-active" href="#">Главная</a>
+            <a class="hdr__link is-active" href="/">Главная</a>
             <a class="hdr__link" href="#">Новости</a>
-            <a class="hdr__link" href="#tariffs">Тарифы</a>
+            <a class="hdr__link" href="/#tariffs">Тарифы</a>
             <a class="hdr__link" href="#resources">Ресурсы</a>
           </nav>
 
@@ -29,10 +29,16 @@
                   {{ auth.currentUser.balanceRub }} ₽
                 </button>
 
-                <div class="hdrUser__profile">
+                <!-- ✅ click -> /panel -->
+                <button
+                  class="hdrUser__profile"
+                  type="button"
+                  @click="goPanel"
+                  aria-label="Открыть панель"
+                >
                   <div class="hdrUser__avatar"></div>
                   <span class="hdrUser__name">{{ auth.currentUser.username }}</span>
-                </div>
+                </button>
               </div>
             </template>
 
@@ -80,7 +86,8 @@
                   <span class="hdrMobPill__txt">{{ auth.currentUser.balanceRub }} ₽</span>
                 </button>
 
-                <button class="hdrMobPill us" type="button" @click="openProfileFromMobile">
+                <!-- ✅ click -> /panel -->
+                <button class="hdrMobPill us" type="button" @click="goPanelFromMobile">
                   <span class="hdrMobPill__avatar"></span>
                   <span class="hdrMobPill__txt">{{ auth.currentUser.username }}</span>
                 </button>
@@ -117,15 +124,16 @@
 
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch, nextTick } from "vue";
+import { useRouter } from "vue-router";
 import { useAuthStore } from "../../stores/auth";
 
 import AuthModals from "../ui/AuthModals.vue";
 import BalanceModal from "../ui/BalanceModal.vue";
 import BaseButton from "../ui/BaseButton.vue";
 
-// ✅ сюда поставишь свою иконку-галочку/стрелку 9x5
 import icoChevron from "../../assets/img/ico-chevron-9x5.png";
 
+const router = useRouter();
 const auth = useAuthStore();
 
 const props = defineProps<{
@@ -157,7 +165,6 @@ function onDocClick(e: MouseEvent) {
   const t = e.target as HTMLElement | null;
   if (!t) return;
 
-  // клики внутри панели или по кнопке — не закрываем
   if (t.closest(".hdrMobPanel")) return;
   if (t.closest(".hdrMobToggle")) return;
 
@@ -224,6 +231,15 @@ function openBalance() {
   isBalanceOpen.value = true;
 }
 
+/* ✅ go to /panel (desktop) */
+function goPanel() {
+  if (!auth.isAuthed) {
+    openLogin();
+    return;
+  }
+  router.push({ name: "panel" });
+}
+
 /* mobile helpers */
 async function openBalanceFromMobile() {
   closeMobile();
@@ -231,9 +247,10 @@ async function openBalanceFromMobile() {
   openBalance();
 }
 
-function openProfileFromMobile() {
+async function goPanelFromMobile() {
   closeMobile();
-  // тут позже откроешь профиль/настройки
+  await nextTick();
+  goPanel();
 }
 
 async function openLoginFromMobile() {
@@ -258,12 +275,12 @@ async function openRegisterFromMobile() {
   z-index: 100;
 }
 
-.hdr { z-index: 100; }            /* уже есть */
+.hdr { z-index: 100; }
 .hdr__wrap { position: relative; z-index: 101; }
 .hdr__pill { position: relative; z-index: 102; }
 .hdrMobPanel { position: relative; z-index: 103; }
 
-.hdrOverlay { z-index: 90; }      /* уже ставили */
+.hdrOverlay { z-index: 90; }
 
 .hdr__wrap {
   position: relative;
@@ -312,12 +329,8 @@ async function openRegisterFromMobile() {
   transition: opacity 0.2s ease;
   white-space: nowrap;
 }
-.hdr__link:hover {
-  opacity: 0.85;
-}
-.hdr__link.is-active {
-  opacity: 1;
-}
+.hdr__link:hover { opacity: 0.85; }
+.hdr__link.is-active { opacity: 1; }
 
 .hdr__actions {
   display: inline-flex;
@@ -357,6 +370,7 @@ async function openRegisterFromMobile() {
   background: rgba(255, 255, 255, 0.04);
 }
 
+/* ✅ profile is now a button */
 .hdrUser__profile {
   height: 32px;
   padding: 0 14px;
@@ -368,6 +382,17 @@ async function openRegisterFromMobile() {
 
   border: 1px solid #ffffff33;
   background: transparent;
+
+  cursor: pointer;
+  user-select: none;
+
+  /* reset button */
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+}
+.hdrUser__profile:hover {
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .hdrUser__avatar {
@@ -409,9 +434,7 @@ async function openRegisterFromMobile() {
   transform: rotate(0deg);
   opacity: 0.9;
 }
-.hdrMobToggle__ico.is-open {
-  transform: rotate(180deg);
-}
+.hdrMobToggle__ico.is-open { transform: rotate(180deg); }
 
 /* ===== MOBILE PANEL ===== */
 .hdrMobPanel {
@@ -442,14 +465,9 @@ async function openRegisterFromMobile() {
   color: rgba(255, 255, 255, 0.45);
   text-decoration: none;
 }
-.hdrMobLink.is-active {
-  color: rgba(255, 255, 255, 0.6);
-}
+.hdrMobLink.is-active { color: rgba(255, 255, 255, 0.6); }
 
-.hdrMobBottom {
-  display: grid;
-  gap: 12px;
-}
+.hdrMobBottom { display: grid; gap: 12px; }
 
 .hdrMobPill {
   height: 52px;
@@ -522,65 +540,33 @@ async function openRegisterFromMobile() {
   padding: 0;
   margin: 0;
   cursor: pointer;
-  z-index: 90; /* ниже хедера */
+  z-index: 90;
 }
 
 /* fade transition (overlay) */
 .fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.18s ease;
-}
+.fade-leave-active { transition: opacity 0.18s ease; }
 .fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
+.fade-leave-to { opacity: 0; }
 
 /* ===== RESPONSIVE RULES ===== */
 @media (max-width: 900px) {
-  .hdr__nav {
-    display: none;
-  }
-  .hdr__actions {
-    display: none;
-  }
-  .hdrMobToggle {
-    display: grid;
-  }
-  .hdr__pill {
-    padding: 12px 16px;
-    border-radius: 28px;
-  }
-  .hdr__logoImg {
-    height: 22px;
-  }
+  .hdr__nav { display: none; }
+  .hdr__actions { display: none; }
+  .hdrMobToggle { display: grid; }
+  .hdr__pill { padding: 12px 16px; border-radius: 28px; }
+  .hdr__logoImg { height: 22px; }
 
-  .hdrMobLink {
-    font-size: 16px;
-  }
+  .hdrMobLink { font-size: 16px; }
+  .hdrMobPill__txt { font-size: 16px; }
 
-  .hdrMobPill__txt {
-    font-size: 16px;
-  }
+  .hdrMobPill { height: 26px; background: none; }
+  .hdrMobPill.us { height: 32px; }
 
-  .hdrMobPill {
-    height: 26px;
-    background: none;
-  }
-
-  .hdrMobPill.us {
-    height: 32px;
-  }
-
-  .hdrMobToggle__ico {
-    width: 16px;
-    height: 16px;
-  }
+  .hdrMobToggle__ico { width: 16px; height: 16px; }
 }
 
-/* just in case */
 @media (min-width: 901px) {
-  .hdrOverlay {
-    display: none;
-  }
+  .hdrOverlay { display: none; }
 }
 </style>

@@ -42,7 +42,7 @@ import DashboardLayout from "../components/dashboard/DashboardLayout.vue";
 
   background:
     linear-gradient(90deg, rgba(120,110,255,.72), rgba(120,110,255,.62)),
-    url("/src/assets/img/hero.png");
+    url("../src/assets/img/hero.png");
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center top;
@@ -61,7 +61,6 @@ import DashboardLayout from "../components/dashboard/DashboardLayout.vue";
 
   background: #0b0d12;
 
-  /* 👇 гарантируем, что шторка дотянется до низа экрана */
   min-height: calc(100vh - 110px);
 }
 

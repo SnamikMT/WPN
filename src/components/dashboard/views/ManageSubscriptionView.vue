@@ -16,7 +16,7 @@
 
       <!-- ряд 2: резина + 352 -->
       <div class="row row--narrowRight">
-        <VideoCard />
+        <VideoCard video-id="dQw4w9WgXcQ" />
         <LibrariesCard />
       </div>
     </div>
