@@ -37,6 +37,7 @@ const MOCK_USERS: MockUserRecord[] = [
     balanceRub: 149,
     plan: "monthly",
     status: "active",
+    avatarUrl: "https://i.pravatar.cc/150?img=12"
   },
   {
     id: "u2",
@@ -47,6 +48,7 @@ const MOCK_USERS: MockUserRecord[] = [
     balanceRub: 0,
     plan: "none",
     status: "active",
+    avatarUrl: "https://i.pravatar.cc/150?img=12"
   },
   {
     id: "u3",
@@ -57,6 +59,7 @@ const MOCK_USERS: MockUserRecord[] = [
     balanceRub: 50,
     plan: "trial",
     status: "active",
+    avatarUrl: "https://i.pravatar.cc/150?img=12"
   },
   {
     id: "u4",
@@ -67,6 +70,7 @@ const MOCK_USERS: MockUserRecord[] = [
     balanceRub: 0,
     plan: "none",
     status: "blocked",
+    avatarUrl: "https://i.pravatar.cc/150?img=12"
   },
   {
     id: "u5",
@@ -77,6 +81,7 @@ const MOCK_USERS: MockUserRecord[] = [
     balanceRub: 999,
     plan: "yearly",
     status: "active",
+    avatarUrl: "https://i.pravatar.cc/150?img=12"
   },
 ];
 

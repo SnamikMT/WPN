@@ -29,14 +29,21 @@
                   {{ auth.currentUser.balanceRub }} ₽
                 </button>
 
-                <!-- ✅ click -> /panel -->
                 <button
                   class="hdrUser__profile"
                   type="button"
                   @click="goPanel"
                   aria-label="Открыть панель"
                 >
-                  <div class="hdrUser__avatar"></div>
+                  <span class="hdrUser__avatar" aria-hidden="true">
+                    <img
+                      v-if="avatarSrc"
+                      class="hdrUser__avatarImg"
+                      :src="avatarSrc"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </span>
                   <span class="hdrUser__name">{{ auth.currentUser.username }}</span>
                 </button>
               </div>
@@ -88,7 +95,15 @@
 
                 <!-- ✅ click -> /panel -->
                 <button class="hdrMobPill us" type="button" @click="goPanelFromMobile">
-                  <span class="hdrMobPill__avatar"></span>
+                  <span class="hdrMobPill__avatar" aria-hidden="true">
+                    <img
+                      v-if="avatarSrc"
+                      class="hdrMobPill__avatarImg"
+                      :src="avatarSrc"
+                      alt=""
+                      loading="lazy"
+                    />
+                  </span>
                   <span class="hdrMobPill__txt">{{ auth.currentUser.username }}</span>
                 </button>
               </template>
@@ -126,6 +141,15 @@
 import { onBeforeUnmount, onMounted, ref, watch, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../../stores/auth";
+import { computed } from "vue";
+
+// любую дефолтную аву (лучше положить в assets)
+import defaultAvatar from "../../assets/img/avatar-default.png";
+
+const avatarSrc = computed(() => {
+  if (!auth.isAuthed || !auth.currentUser) return "";
+  return auth.currentUser.avatarUrl || defaultAvatar;
+});
 
 import AuthModals from "../ui/AuthModals.vue";
 import BalanceModal from "../ui/BalanceModal.vue";
@@ -395,12 +419,30 @@ async function openRegisterFromMobile() {
   background: rgba(255, 255, 255, 0.04);
 }
 
-.hdrUser__avatar {
+.hdrUser__avatar{
   width: 22px;
   height: 22px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.25);
   flex: 0 0 auto;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.hdrUser__avatarImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* mobile */
+
+.hdrMobPill__avatarImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .hdrUser__name {
@@ -484,11 +526,13 @@ async function openRegisterFromMobile() {
   width: 100%;
 }
 
-.hdrMobPill__avatar {
+.hdrMobPill__avatar{
   width: 22px;
   height: 22px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  display: inline-block;
 }
 
 .hdrMobPill__txt {
