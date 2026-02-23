@@ -5,7 +5,15 @@
       <div class="mobPill">
         <div class="userPill userPill--mob">
           <div class="userPill__left">
-            <div class="userPill__avatar"></div>
+              <span class="hdrMobPill__avatar" aria-hidden="true">
+                <img
+                  v-if="avatarSrc"
+                  class="hdrMobPill__avatarImg"
+                  :src="avatarSrc"
+                  alt=""
+                  loading="lazy"
+                />
+              </span>
             <div class="userPill__name">{{ user?.username ?? "Username" }}</div>
           </div>
 
@@ -122,7 +130,15 @@
       <div class="side__card">
         <div class="userPill">
           <div class="userPill__left">
-            <div class="userPill__avatar"></div>
+              <span class="hdrUser__avatar" aria-hidden="true">
+                <img
+                  v-if="avatarSrc"
+                  class="hdrUser__avatarImg"
+                  :src="avatarSrc"
+                  alt=""
+                  loading="lazy"
+                />
+              </span>
             <div class="userPill__name">{{ user?.username ?? "Username" }}</div>
           </div>
 
@@ -234,6 +250,17 @@ import icoTg from "../../assets/img/ico-tg.png";
 import icoExit from "../../assets/img/ico-exit.png";
 import icoArrow from "../../assets/img/arrow-right.png";
 import icoChevron from "../../assets/img/ico-chevron-9x5.png";
+
+import { computed } from "vue";
+
+// любую дефолтную аву (лучше положить в assets)
+import defaultAvatar from "../../assets/img/avatar-default.png";
+
+const avatarSrc = computed(() => {
+  if (!auth.isAuthed || !auth.currentUser) return "";
+  return auth.currentUser.avatarUrl || defaultAvatar;
+});
+
 
 type TabKey = "subscription" | "manage" | "ref" | "security" | "help";
 
@@ -415,6 +442,40 @@ async function onLogout() {
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.25);
   flex: 0 0 auto;
+}
+
+.hdrUser__avatar{
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  flex: 0 0 auto;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.hdrUser__avatarImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* mobile */
+.hdrMobPill__avatar{
+  width: 22px;
+  height: 22px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  overflow: hidden;
+  display: inline-block;
+}
+
+.hdrMobPill__avatarImg{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .userPill__name {
