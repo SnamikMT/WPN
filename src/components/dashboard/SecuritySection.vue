@@ -67,7 +67,7 @@
 
           <div class="fields">
             <div class="row">
-              <input class="inp inp--grow" placeholder="АктуальнаяПочта@майл.ру" v-model="oldEmail" />
+              <input class="inp inp--grow inp--locked"placeholder="АктуальнаяПочта@майл.ру" v-model="oldEmail" readonly aria-readonly="true"/>
               <button class="sideBtn" type="button" aria-label="Отправить код">
                 <img class="sideBtn__img" :src="arrowIcon" alt="" />
               </button>
@@ -148,7 +148,7 @@
             </div>
 
             <div class="row">
-              <input class="inp inp--grow" placeholder="АктуальнаяПочта@майл.ру" v-model="delEmail" />
+              <input class="inp inp--grow inp--locked" placeholder="АктуальнаяПочта@майл.ру" v-model="delEmail"  readonly aria-readonly="true"/>
               <button class="sideBtn" type="button" aria-label="Отправить код">
                 <img class="sideBtn__img" :src="arrowIcon" alt="" />
               </button>
@@ -468,4 +468,17 @@ const delCode = ref("");
   .sec__grid { grid-template-columns: 1fr; }
   .bigBtn { max-width: 100%; }
 }
+
+/* readonly inputs — выглядят чуть “заблокировано”, но копируются */
+.inp[readonly],
+.inp--locked{
+  opacity: .85;
+  cursor: default;
+}
+
+/* чтобы не было ощущения “можно печатать” */
+.inp[readonly]{
+  user-select: text;
+}
+
 </style>

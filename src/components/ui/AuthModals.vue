@@ -37,7 +37,10 @@
 
           <!-- remember -->
           <div class="inpShell">
-            <input class="inp inp--inShell" placeholder="Запомнить пароль" readonly />
+            <div class="inp inp--inShell inp--fake">
+              Запомнить пароль
+            </div>
+
             <button
               class="toggleBtn"
               type="button"
@@ -47,6 +50,7 @@
               <span class="toggle" :class="{ 'is-on': remember }"></span>
             </button>
           </div>
+
 
           <!-- ошибка -->
           <div v-if="errorText" class="errorText">{{ errorText }}</div>
@@ -317,49 +321,63 @@ function fakeRestore() {
 .iconImg { width: 20px; height: 20px; }
 
 /* toggle */
+/* toggle — такой же стиль, но больше */
 .toggleBtn {
   position: absolute;
   top: 50%;
   right: 14px;
   transform: translateY(-50%);
-  width: 34px;
-  height: 20px;
+
+  /* ✅ увеличили hit-area */
+  width: 52px;
+  height: 28px;
   padding: 0;
   border: 0;
   background: transparent;
   cursor: pointer;
+
   display: grid;
   place-items: center;
 }
 
 .toggle {
-  width: 34px;
-  height: 20px;
-  border-radius: 24px;
-  background: #191920;
+  /* ✅ сам тумблер больше */
+  width: 52px;
+  height: 28px;
+  border-radius: 999px;
+
+  background: #191920; /* как было */
   display: block;
   position: relative;
   font-size: 0;
   line-height: 0;
+
+  /* чуть контраста, чтобы не терялся */
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08);
 }
 
 .toggle::after {
   content: "";
   position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 14px;
-  height: 14px;
-  border-radius: 14px;
+
+  /* ✅ кружок больше */
+  top: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+
   background: #ffffff99;
   display: block;
-  transition: left 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease;
 }
 
+/* ✅ движение через transform — стабильнее, чем left */
 .toggle.is-on::after {
-  left: 17px;
+  transform: translateX(24px);
   background: #57c35e;
 }
+
 
 /* ошибка */
 .errorText {
@@ -430,4 +448,12 @@ function fakeRestore() {
   height: 16px;
   display: block;
 }
+
+.inp--fake{
+  display: flex;
+  align-items: center;
+  cursor: default;   /* обычная стрелка */
+  user-select: none; /* чтобы текст не выделялся */
+}
+
 </style>

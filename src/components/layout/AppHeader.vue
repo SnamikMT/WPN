@@ -10,7 +10,7 @@
 
           <!-- DESKTOP NAV -->
           <nav class="hdr__nav" aria-label="Основное меню">
-            <a class="hdr__link is-active" href="/">Главная</a>
+            <a class="hdr__link" href="/">Главная</a>
             <a class="hdr__link" href="#">Новости</a>
             <a class="hdr__link" href="/#tariffs">Тарифы</a>
             <a class="hdr__link" href="#resources">Ресурсы</a>

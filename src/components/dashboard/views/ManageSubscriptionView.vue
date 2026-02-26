@@ -16,7 +16,7 @@
 
       <!-- ряд 2: резина + 352 -->
       <div class="row row--narrowRight">
-        <VideoCard video-id="dQw4w9WgXcQ" />
+        <VideoCard :src="helpVideo" :poster="helpPoster" />
         <LibrariesCard />
       </div>
     </div>
@@ -28,6 +28,9 @@ import InstallCard from "../widgets/manage/InstallCard.vue";
 import MySubscriptionCard from "../widgets/manage/MySubscriptionCard.vue";
 import VideoCard from "../widgets/manage/VideoCard.vue";
 import LibrariesCard from "../widgets/manage/LibrariesCard.vue";
+
+import helpVideo from "../../../assets/video/help.mp4";
+import helpPoster from "../../../assets/img/help.png";
 </script>
 
 <style scoped>
