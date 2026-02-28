@@ -9,7 +9,7 @@
       </div>
     </template>
 
-    <!-- ✅ fullscreen делаем на контейнер, чтобы оверлеи тоже были в fullscreen -->
+    <!-- fullscreen на контейнер -->
     <div
       ref="fsEl"
       class="player"
@@ -22,6 +22,7 @@
         :src="src"
         :poster="poster"
         playsinline
+        webkit-playsinline
         preload="metadata"
         disablepictureinpicture
         disableremoteplayback
@@ -29,7 +30,7 @@
         @timeupdate="onTime"
         @loadedmetadata="onMeta"
         @ended="onEnded"
-        @click="togglePlay"
+        @pointerdown.stop.prevent="togglePlay"
       />
 
       <!-- COVER -->
@@ -37,7 +38,8 @@
         v-if="!started"
         class="cover"
         type="button"
-        @click="start"
+        @pointerdown.prevent.stop="start"
+        @click.prevent.stop
         :aria-label="`Воспроизвести: ${title}`"
       >
         <span class="shade" aria-hidden="true"></span>
@@ -79,8 +81,7 @@
           class="ctlBtn"
           type="button"
           @click.stop="toggleMute"
-          :aria-label="muted ? 'Включить звук' : 'Выключить звук'"
-        >
+          :aria-label="muted ? 'Включить звук' : 'Выключить звук'">
           <img class="ctlIcon" :src="muted ? icoMute : icoVolume" alt="" aria-hidden="true" />
         </button>
 
@@ -89,8 +90,7 @@
           class="ctlBtn"
           type="button"
           @click.stop="toggleFs"
-          :aria-label="isFs || pseudoFs ? 'Закрыть полноэкранный режим' : 'На весь экран'"
-        >
+          :aria-label="isFs || pseudoFs ? 'Закрыть полноэкранный режим' : 'На весь экран'">
           <span v-if="isFs || pseudoFs" class="x" aria-hidden="true">×</span>
           <img v-else class="ctlIcon" :src="icoFullscreen" alt="" aria-hidden="true" />
         </button>
@@ -104,8 +104,6 @@ import { computed, onBeforeUnmount, onMounted, ref } from "vue";
 import UiCard from "./UiCard.vue";
 
 import icoHelp from "../../../../assets/img/ico-help.png";
-
-/* ✅ твои иконки */
 import icoPlay from "../../../../assets/img/play.svg";
 import icoPause from "../../../../assets/img/pause.svg";
 import icoReplay from "../../../../assets/img/replay.svg";
@@ -114,8 +112,8 @@ import icoMute from "../../../../assets/img/mute.svg";
 import icoFullscreen from "../../../../assets/img/fullscreen.svg";
 
 const props = defineProps<{
-  src: string;          // URL (через import из assets или /public)
-  poster?: string;      // URL постера
+  src: string;
+  poster?: string;
   title?: string;
 }>();
 
@@ -145,27 +143,35 @@ const progress = computed(() => {
   return Math.min(100, Math.max(0, (current.value / duration.value) * 100));
 });
 
-function start() {
+/**
+ * ВАЖНО: play() должен вызываться в рамках жеста пользователя.
+ * Поэтому start() вешаем на pointerdown по cover и НЕ уводим play() в rAF/таймеры.
+ */
+async function start() {
+  if (!vid.value) return;
+
   started.value = true;
   ended.value = false;
 
-  nextFrame(() => {
-    const p = vid.value?.play();
-    if (p && typeof (p as any).then === "function") {
-      (p as Promise<void>)
-        .then(() => (isPlaying.value = true))
-        .catch(() => (isPlaying.value = false));
-    } else {
-      isPlaying.value = true;
-    }
-  });
+  try {
+    await vid.value.play();
+    isPlaying.value = true;
+  } catch {
+    // если браузер всё равно запретил — не делаем вид, что играет
+    isPlaying.value = false;
+
+    // мягкая попытка на микротике (иногда помогает в webview)
+    queueMicrotask(() => {
+      vid.value?.play().then(() => (isPlaying.value = true)).catch(() => {});
+    });
+  }
 }
 
-function togglePlay() {
+async function togglePlay() {
   if (!vid.value) return;
 
   if (!started.value) {
-    start();
+    await start();
     return;
   }
 
@@ -176,13 +182,11 @@ function togglePlay() {
   }
 
   if (vid.value.paused) {
-    const p = vid.value.play();
-    if (p && typeof (p as any).then === "function") {
-      (p as Promise<void>)
-        .then(() => (isPlaying.value = true))
-        .catch(() => (isPlaying.value = false));
-    } else {
+    try {
+      await vid.value.play();
       isPlaying.value = true;
+    } catch {
+      isPlaying.value = false;
     }
   } else {
     vid.value.pause();
@@ -255,7 +259,6 @@ async function toggleFs() {
     try {
       await document.exitFullscreen();
     } catch {
-      // if exit fails, fallback
       pseudoFs.value = false;
       unlockBody();
     }
@@ -281,7 +284,6 @@ async function toggleFs() {
 
 function onFsChange() {
   isFs.value = !!document.fullscreenElement;
-  // если вышли из fullscreen — не держим locked body
   if (!isFs.value) unlockBody();
 }
 
@@ -299,10 +301,6 @@ function fmt(sec: number) {
   const m = Math.floor(sec / 60);
   const s = Math.floor(sec % 60);
   return `${m}:${String(s).padStart(2, "0")}`;
-}
-
-function nextFrame(fn: () => void) {
-  requestAnimationFrame(() => requestAnimationFrame(fn));
 }
 
 function onFirstTouch() {
